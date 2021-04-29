@@ -1,0 +1,9 @@
+{
+  "port": 5000,
+  "mongoUri": "mongodb+srv://dnadeev:E34DN20S141PMI@cluster0.tittv.mongodb.net/intellectum?retryWrites=true&w=majority",
+  "jwtsecret": "dnadeev intellectum",
+  "SEND_GRID_API": "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",
+  "MY_EMAIL": "infointellectum@yandex.ru",
+  "BASE_URL": "http://localhost:5000"
+}
+

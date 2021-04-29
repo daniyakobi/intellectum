@@ -1,0 +1,144 @@
+.auth {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+.auth .container {
+  min-height: 100vh;
+}
+
+.auth__logo {
+  width: 150px;
+  height: 55px;
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  background-color: var(--dark-grey);
+}
+
+.auth__form {
+  width: 420px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--white);
+  box-shadow: 0px 8px 30px var(--stroke);
+  /* border-radius: 12px; */
+  padding: 30px;
+}
+
+.form__back {
+  color: var(--blue);
+  margin-bottom: 20px;
+}
+.form__back span {
+  margin-left: 8px;
+  margin-right: auto;
+}
+
+.form__title {
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.form__group {
+  margin-bottom: 20px;
+}
+
+input[type=text].form__input:not(.browser-default), 
+input[type=password].form__input:not(.browser-default),
+input[type=email].form__input:not(.browser-default), 
+input[type=number].form__input:not(.browser-default) {
+  border: 1px solid #00000010;
+  /* border-radius: 6px; */
+  padding: 0px 20px;
+  height: 50px;
+  margin: 0;
+  transition: border 0.3s ease-in-out;
+  width: auto;
+}
+
+input[type=text].form__input:focus:not(.browser-default), 
+input[type=password].form__input:focus:not(.browser-default),
+input[type=email].form__input:focus:not(.browser-default),
+input[type=number].form__input:focus:not(.browser-default),
+.form__input-group .info__settings-textarea:focus {
+  border-bottom: none;
+  border: 1px solid var(--black);
+  box-shadow: none;
+}
+
+input.invalid[type=text].form__input:not(.browser-default), 
+input.invalid[type=password].form__input:not(.browser-default),
+input.invalid[type=email].form__input:not(.browser-default),
+input.invalid[type=number].form__input:not(.browser-default),
+.form__input-group .info__settings-textarea.invalid  {
+  border-bottom: none;
+  border: 1px solid var(--red);
+  box-shadow: none;
+}
+
+input.valid[type=text].form__input:not(.browser-default), 
+input.valid[type=password].form__input:not(.browser-default),
+input.valid[type=email].form__input:not(.browser-default),
+input.valid[type=number].form__input:not(.browser-default),
+.form__input-group .info__settings-textarea.valid  {
+  border-bottom: none;
+  border: 1px solid var(--green);
+  box-shadow: none;
+}
+
+.toast {
+  background-color: var(--black);
+  box-shadow: 0 1px 0 0 var(--dark-grey);
+  /* border-radius: 6px; */
+}
+
+.form__input:focus + .form__label {
+  color: var(--black);
+}
+
+.form__reset-link {
+  color: var(--black);
+  transition: all 0.3s ease-in-out;
+}
+
+.form__reset-link:hover {
+  color: var(--dark-orange);
+}
+
+.form__label {
+  margin-bottom: 5px;
+  color: var(--black);
+}
+
+.form__input::placeholder {
+  opacity: 1;
+}
+
+.form__error {
+  color: var(--red);
+  margin-top: 5px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.form__buttons {
+  margin-top: 15px;
+}
+
+.form__button {
+  height: 50px;
+}
+
+.form__footer {
+  opacity: 0.4;
+  margin-top: 30px;
+}
+
+.form__footer a {
+  text-decoration: underline;
+}
