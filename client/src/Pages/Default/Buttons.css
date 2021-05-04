@@ -1,0 +1,25 @@
+.button {
+  width: 170px;
+  height: 40px;
+  /* border-radius: 3px; */
+  border: 1px solid var(--black);
+  background-color: transparent;
+  color: var(--black);
+  transition: all 0.3s ease-in-out;
+  letter-spacing: 0.01em;
+}
+
+.button.full {
+  background-color: var(--black);
+  color: var(--white);
+}
+
+.button.full-width {
+  width: 100%;
+}
+
+.button:hover, .button:hover.full {
+  background-color: var(--dark-orange);
+  color: var(--white);
+  border: 1px solid var(--dark-orange);
+}

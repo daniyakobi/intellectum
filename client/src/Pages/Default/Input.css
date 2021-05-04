@@ -1,0 +1,20 @@
+.input {
+  height: 50px;
+  border: 1px solid #E5E5E5;
+  border-radius: 6px;
+}
+
+.input:focus {
+  border: 1px solid #3d8be4;
+}
+
+.input.error {
+  border: 1px solid #FF543E;
+}
+
+.input::placeholder {
+  opacity: 0.4;
+}
+.full-width { width: 100%; }
+.half-width { width: 49%; }
+

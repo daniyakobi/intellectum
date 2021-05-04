@@ -1,0 +1,85 @@
+.login__user {
+  position: relative;
+}
+
+.login__user button {
+  background-color: transparent;
+}
+
+.login__user-avatar {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-left: 20px;
+  margin-right: 10px;
+}
+
+.login__user-name {
+  letter-spacing: 0.01em;
+  margin-right: 10px;
+  color: var(--black);
+  transition: all 0.3s ease-in-out;
+}
+
+.login__user-name:hover {
+  color: var(--dark-orange);
+}
+
+.popup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  /* padding: 20px; */
+  /* border-radius: 6px; */
+  background-color: #fff;
+  box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.1);
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
+}
+
+.popup.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.login__user-menu-button {
+  transition: all 0.5s ease-in-out;
+}
+
+.login__user-menu-button.active {
+  transform: rotate(180deg);
+}
+
+.login__user-notifications {
+  position: relative;
+}
+
+.login__user-notifications-block {
+  width: 300px;
+}
+
+.login__user-notifications-list {
+  min-height: 150px;
+  padding: 0 20px;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.login__user-notifications-block h3 {
+  margin-bottom: 15px;
+}
+
+.login__user-notifications-block a {
+  margin-top: 20px;
+}
+
+.login__user-notifications-button:hover {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
