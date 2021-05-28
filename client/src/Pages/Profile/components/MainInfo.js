@@ -1,23 +1,42 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect, useCallback } from 'react'
 import { useHttp } from '../../../hooks/http.hook'
 import { useMessage } from '../../../hooks/message.hook'
 import { AuthContext } from '../../../context/auth.context'
 import { NavLink } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 import edit from '../../../img/edit.svg'
-import defaultAvatar from '../../../img/default.png'
+import defaultAvatar from '../../../img/profile-image.png'
+import progressImage from '../../../img/progress-indicator.png'
 import axios from 'axios'
 
-const MainInfo = ({user}) => {
+const MainInfo = ({ candidate }) => {
   const auth = useContext(AuthContext)
   const message = useMessage()
+  const [user, setUser] = useState(candidate)
   const {loading, error, request, clearError} = useHttp()
   const [form, setForm] = useState({
     avatar: ''
   })
   const [userTmp, setUserTmp] = useState({
-    preview: form.avatar
+    preview: user.avatarUrl
   })
+  const getUser = useCallback(async () => {
+    try {
+      const data = await request('/api/profile/main', 'GET', null, { Authorization: `Bearer ${auth.token}` })
+      setUser(data)
+    } catch (e) {}
+  }, [auth.token, request])
+
+  useEffect(() => {
+    getUser()
+  }, [getUser])
+
+  let avatar = ''
+  if(user.avatarUrl) {
+    avatar = `http://localhost:3000${user.avatarUrl}`
+  } else {
+    avatar = defaultAvatar
+  }
   
   const uploadFile = (file) => {
     if(!['image/jpeg','image/png','image/jpg'].includes(file.type)) {
@@ -44,10 +63,8 @@ const MainInfo = ({user}) => {
     e.preventDefault()
     try {
       const formData = new FormData();
-      console.log('preview: ', userTmp);
-      console.log('avatar: ', form);
+      formData.append('token', `Bearer ${auth.token}`)
       if (form.avatar instanceof File) {
-        console.log('FormData: ', formData);
         formData.append('avatar', form.avatar)
       }
       axios(
@@ -55,14 +72,15 @@ const MainInfo = ({user}) => {
           method: "post",
           url: "/api/profile/avatar",
           data: formData,
-          config: { headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${auth.token}` } }
+          config: { headers: { "Content-Type": "multipart/form-data" } }
         })
         .then(function (result) {
-          message(result)
+          message('Аватар успешно загружен')
         }, function (error) {
           message(error)
         });
       document.querySelector('.info__avatar-submit').classList.remove('show')
+      getUser()
     } catch (e) {}
   }
 
@@ -82,7 +100,7 @@ const MainInfo = ({user}) => {
             </div>
             <input type='submit' value="Сохранить" className='info__avatar-submit form__button full text-16 button flex-center animate__animated animate__fadeInUp' />
            </form>
-           <img src={ userTmp.preview ? userTmp.preview : defaultAvatar } alt="Мой аватар" id="formAvatarView" className="info__avatar-preview" />
+           <img src={ userTmp.preview ? userTmp.preview : avatar } alt="Мой аватар" id="formAvatarView" className="info__avatar-preview" />
          </div>
          <div className="flex-column" style={{marginLeft: 0}, {width: '100%'}}>
            <h3 className="info__name text-24">{ user.subname + ' ' + user.name + ' ' + user.patronymic }</h3>
@@ -125,9 +143,9 @@ const MainInfo = ({user}) => {
           </div>
         </div>
       </div>
-      <div className="info__section animate__animated animate__fadeIn">
-        <h3 className="info__name text-24">Общий прогресс</h3>
-        <div className="info__progress flex-row-start">
+      <div className="info__section flex-row-start animate__animated animate__fadeIn">
+        <div className="info__progress flex-column">
+          <h3 className="info__name text-24">Общий прогресс</h3>
           <div className="info__progress-item flex-column">
             <span className="text-13">Бонусные рубли</span>
             <span className="text-title info__progress-value">{ user.bonusCurrent }</span>
@@ -147,6 +165,9 @@ const MainInfo = ({user}) => {
                 <span className="text-title info__progress-value">{ user.createdCourses ? user.createdCourses.length : '0' }</span>
               </div>
           }
+        </div>
+        <div class="info__section-image animate__animated animate__fadeIn">
+          <img src={ progressImage } alt='Мой прогресс' />
         </div>
       </div>
     </div> 

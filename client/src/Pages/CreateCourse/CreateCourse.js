@@ -3,38 +3,39 @@ import { useHttp } from '../../hooks/http.hook'
 import { useMessage } from '../../hooks/message.hook'
 import { AuthContext } from '../../context/auth.context'
 import Button from '../Default/Button'
-import SelectItems from './components/SelectItems'
-import defaultImg from '../../img/default-course.png'
+import Select from '../Default/Select'
+import defaultImg from '../../img/bg-1.jpeg'
+import createCourseImage from '../../img/create.png'
+import axios from 'axios'
 
-const CreateCourse = ({ user }) => {
+const CreateCourse = ({ candidate }) => {
   const auth = useContext(AuthContext)
   const message = useMessage()
   const {loading, error, request, clearError} = useHttp()
+  const [user, setUser] = useState(candidate)
   const [form, setForm] = useState({
     name: '', 
     description: '', 
     author: user._id, 
     price: '',
-    direction: ''
+    direction: '',
+    thumb: ''
   })
   const [courseImg, setCourseImg] = useState({
     preview: defaultImg
   })
   const [direction, setDirection] = useState({ direction: '' })
   const [directions, setDirections] = useState([])
-  const fileInput = useRef(null)
 
-  useEffect(() => {
-    message(error)
-    clearError()
-  }, [error, message, clearError])
+  const getUser = useCallback(async () => {
+    try {
+      const data = await request('/api/profile/main', 'GET', null, { Authorization: `Bearer ${auth.token}` })
+      setUser(data)
+    } catch (e) {}
+  }, [auth.token, request])
 
   const changeHandler = event => {
     setForm({...form, [event.target.name]: event.target.value})
-  }
-
-  const selectHandler = event => {
-    setForm({...form, direction: event.target.value})
   }
 
   const uploadFile = (file) => {
@@ -48,24 +49,40 @@ const CreateCourse = ({ user }) => {
     }
   }
 
-  const imgHandler = event => {
-    let reader = new FileReader()
-    let file = fileInput.current.files[0]
-    uploadFile(file)
+  let file
 
-    reader.onloadend = () => {
-      setCourseImg({preview: reader.result})
-      // setForm({...form, avatar: file})
-    }
-    // setForm(userTmp)
-    reader.readAsDataURL(file)
+  const imgHandler = event => {
+    file = event.target.files[0]
+    uploadFile(file)
+    setCourseImg({preview: URL.createObjectURL(file)})
+    setForm({thumb: event.target.files[0]})
   }
 
   const saveHandler = async (e) => {
     e.preventDefault()
-    try {
-      const data = await request('/api/profile/create-course', 'POST', {...form}, { Authorization: `Bearer ${auth.token}` })
-      message(data.message)
+    try { 
+      const formData = new FormData();
+      formData.append('name', document.querySelector('#name').value)
+      formData.append('description', document.querySelector('#description').value)
+      formData.append('author', user._id)
+      formData.append('token', `Bearer ${auth.token}`)
+      formData.append('price', document.querySelector('#price').value)
+      formData.append('direction', document.querySelector('.select__input').getAttribute('value'))
+      if (form.thumb instanceof File) {
+        formData.append('thumb', form.thumb)
+      }
+      axios(
+        {
+          method: "post",
+          url: "/api/profile/create-course",
+          data: formData,
+          config: { headers: { "Content-Type": "multipart/form-data" } }
+        })
+        .then(function (result) {
+          message('Курс добавлен, переходите к заполнению')
+        }, function (error) {
+          message(error)
+        });
     } catch (e) {}
   }
 
@@ -96,9 +113,22 @@ const CreateCourse = ({ user }) => {
     [auth.token, request]
   )
 
+  let tmp = []
+  let first = ''
+  const selectDirectionsHandler = (directions) => {
+    directions.map((item, index) => {
+      if(index == 0) { first = item.name }
+      tmp[index] = {
+        name: item.name
+      }
+    })
+  }
+
   useEffect(() => {
+    getUser()
     fetchDirections()
-  }, [fetchDirections])
+  }, [getUser, fetchDirections])
+
 
   return(
     <div className="info__wrapper course">
@@ -113,9 +143,15 @@ const CreateCourse = ({ user }) => {
             </div>
             <div className="form__input-group" style={{marginBottom: 10}}>
               <label forhtml='direction'>Выберите направление
-                <select className="form__input info__settings-input text-17" name="direction" id="direction" defaultValue={ directions[0] } onChange={ selectHandler }>
-                  { !loading && <SelectItems directions={directions} /> }
-                </select>
+                { selectDirectionsHandler(directions) }
+                <Select 
+                  classes={'form__input-direction'} 
+                  name={'direction'} 
+                  id={'direction'}
+                  title={'Выберите направление'}
+                  options={ tmp }
+                  current={ first }
+                />
               </label>
               <div className="flex-column course__direction-wrapper">
                 <div className="course__button form__reset-link text-16 flex-row-right" onClick={ showNewDirection }>Добавить направление?</div>
@@ -129,30 +165,33 @@ const CreateCourse = ({ user }) => {
                 </div>
               </div>
             </div>  
-            <div className="form__input-group flex-column course__input">
+            <div className="form__input-group flex-column course__input" style={{marginBottom: 10}}>
               <label forhtml='price' >Цена</label>
               <input type="number" id="price" className="form__input info__settings-input text-17 validate" placeholder="Введите цену курса в рублях" name="price" onChange={ changeHandler } />
               <span className="form__error helper-text text-14" data-error="Цена курса не может быть пустой"></span>
             </div>  
+            <div className="form__input-group form__block-avatar form__block-course-img flex-column" style={{marginBottom: 15}}>
+              <label forhtml='thumb'>Изображение курса</label>
+              <div className="form__avatar course__img">
+                <input type='file' id='thumb' name='thumb' onChange={ imgHandler } className='form__input-img' />
+              </div>
+              <img src={ courseImg.preview ? courseImg.preview : defaultImg } alt="Изображение курса" id="courseImgView" className="course__img-view" />
+            </div>  
+            <div className="form__block flex-row">     
+              <div className="form__input-group flex-column course__description">
+                <label forhtml='description' >Описание</label>
+                <textarea id="description" className="form__input info__settings-textarea text-17 validate" placeholder="Введите описание" name="description" onChange={ changeHandler }b/>
+                <span className="form__error helper-text text-14" data-error="Описание не может быть пустым"></span>
+              </div>  
+            </div>  
+            <div className="form__block flex-row">
+              <Button class={ 'form__button full text-16' } name={ 'Создать' } type={ 'submit' } handler={ saveHandler } disabled={loading} />
+            </div> 
+          </div>
+          <div class="info__section-image animate__animated animate__fadeIn">
+            <img src={ createCourseImage } alt='Создание курса' />
           </div>  
-          <div className="form__block form__block-avatar form__block-course-img flex-row">
-            <div className="form__avatar course__img">
-              <input type='file' id='courseImg' name='courseImg' ref={ fileInput } onChange={ imgHandler } className='form__input-img' />
-            </div>
-            <img src={ courseImg.preview ? courseImg.preview : defaultImg } alt="Изображение курса" id="courseImgView" className="course__img-view" />
-          </div>    
         </div>
-        <div className="info__line"></div>
-        <div className="form__block flex-row">     
-          <div className="form__input-group flex-column course__description">
-            <label forhtml='description' >Описание</label>
-            <textarea id="description" className="form__input info__settings-textarea text-17 validate" placeholder="Введите описание" name="description" onChange={ changeHandler }b/>
-            <span className="form__error helper-text text-14" data-error="Описание не может быть пустым"></span>
-          </div>  
-        </div>
-        <div className="form__block flex-row">
-          <Button class={ 'form__button full text-16' } name={ 'Создать' } type={ 'submit' } handler={ saveHandler } disabled={loading} />
-        </div> 
       </div>
     </div>
   )

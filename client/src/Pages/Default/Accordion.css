@@ -1,0 +1,42 @@
+.MuiAccordion-rounded:first-child {
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+}
+.MuiAccordion-rounded:last-child {
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+.MuiPaper-elevation1 {
+  box-shadow: none !important;
+}
+.MuiAccordionSummary-root {
+  min-height: 50px !important;
+}
+.MuiAccordion-root.Mui-expanded {
+  background-color: var(--neutral) !important;
+}
+.MuiAccordionSummary-content.Mui-expanded {
+  margin: 0 !important;
+  padding: 20px 0 !important;
+  border-bottom: 1px solid var(--dark-grey) !important;
+}
+.MuiTypography-body1 {
+  font-family: 'Proxima Nova', serif !important;
+  font-size: 16px !important;
+  line-height: 24px !important;
+  letter-spacing: 0 !important;
+}
+.MuiAccordionSummary-content .MuiTypography-body1  {
+  font-size: 18px !important;
+  font-weight: 500 !important;
+}
+.MuiTypography-body1 .info__line {
+  margin: 20px 0 !important;
+}
+.MuiAccordionDetails-root {
+  display: block !important;
+  padding: 20px 16px !important;
+}
+.MuiIconButton-root {
+  color: var(--black) !important;
+}

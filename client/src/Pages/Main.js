@@ -38,11 +38,10 @@ const Main = (userId) => {
         <div className="header__menu menu">
           <ul className=" menu__list flex-row">
             <li className="menu__item"><NavLink to="/all-courses" className="menu__link"><span className="text-18">Все курсы</span></NavLink></li>
-            <li className="menu__item"><NavLink to="/teachers" className="menu__link"><span className="text-18">Наши преподаватели</span></NavLink></li>
             <li className="menu__item"><NavLink to='/about' className="menu__link"><span className="text-18">О платформе</span></NavLink></li>
           </ul>
         </div>
-        { !loading && user ? <HeaderUser user={user} /> : <button className="header__login login text-16 flex-center" onClick={ exitHandler } >Выйти</button> }
+        { !loading && user ? '' : <button className="header__login login text-16 flex-center" onClick={ exitHandler } >Выйти</button> }
       </header>
     </div>
   )

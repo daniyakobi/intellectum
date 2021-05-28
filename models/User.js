@@ -18,11 +18,11 @@ const schema = new Schema({
   createdCourses: [{ type: Types.ObjectId, ref: 'Course' }],
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  notify: [{ type: Types.ObjectId, ref: 'Notify' }],
-  operations: [{ type: Types.ObjectId, ref: 'Operations' }],
   role: { type: Number, required: true },
   resetToken: { type: String },
-  resetTokenExp: { type: Date }
+  resetTokenExp: { type: Date },
+  dialogs: [{ type: Types.ObjectId, ref: 'Dialog' }],
+  online: { type: Boolean, required: true, default: false }
 })
 
 module.exports = User = mongoose.model('user', schema)

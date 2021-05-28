@@ -1,12 +1,31 @@
-import React, { useContext } from 'react'
+import React, { useState, useContext, useEffect, useCallback } from 'react'
+import { useHttp } from '../../../hooks/http.hook'
+import { useMessage } from '../../../hooks/message.hook'
 import { AuthContext } from '../../../context/auth.context'
+import giftImage from '../../../img/gift.png'
 
-const Bonus = ({ user }) => {
+const Bonus = ({ candidate }) => {
+  const auth = useContext(AuthContext)
+  const message = useMessage()
+  const [user, setUser] = useState(candidate)
+  const {loading, error, request, clearError} = useHttp()
+
+  const getUser = useCallback(async () => {
+    try {
+      const data = await request('/api/profile/main', 'GET', null, { Authorization: `Bearer ${auth.token}` })
+      setUser(data)
+    } catch (e) {}
+  }, [auth.token, request])
+
+  useEffect(() => {
+    getUser()
+  }, [getUser])
+
   return(
     <div className="info__wrapper">
-        <h2 className="info__title text-24 animate__animated animate__fadeInRight">Программа лояльности</h2>
-        <div className="info__section animate__animated animate__fadeIn">
-          <div className="flex-row-start info__bonus info__progress"> 
+        <div className="info__section flex-row-start animate__animated animate__fadeIn">
+          <h2 className="info__title text-24 animate__animated animate__fadeInRight">Программа лояльности</h2>
+          <div className="flex-column info__bonus info__progress"> 
             <div className="info__progress-item flex-column">
               <span className="text-13">Мои бонусные рубли</span>
               <span className="text-title info__progress-value">{ user.bonusCurrent }</span>
@@ -20,18 +39,8 @@ const Bonus = ({ user }) => {
               <span className="text-title info__progress-value">{ user.bonusAll }</span>
             </div>
           </div>
-          <div className="info__line"></div>
-          <div className="info__operations">
-            <h3 className="info__section-title text-16"><span>История операций</span></h3>
-            {
-              user.operations ? 
-               'Вы не совершали никаких операций' :
-               user.operations.map((item, index) => {
-                 return (
-                   <div>Привет</div>
-                 )
-               }) 
-            }
+          <div class="info__section-image animate__animated animate__fadeIn">
+            <img src={ giftImage } alt='Бонусная программа' />
           </div>
         </div>
         <div className="info__section animate__animated animate__fadeIn">

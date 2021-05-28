@@ -6,17 +6,17 @@ import {useHttp} from '../../hooks/http.hook'
 import MainInfo from './components/MainInfo'
 import Settings from './components/Settings'
 import Bonus from './components/Bonus'
-import Feedback from './components/Feedback'
 import MyCourses from './components/MyCourses'
 import Sidebar from '../Default/Sidebar'
 import CreateCourse from '../CreateCourse/CreateCourse'
-import Notify from './components/Notify'
+import Chat from './components/Chat'
 import Directions from './components/Directions'
 import Users from './components/Users'
 import UserDetail from './components/UserDetail'
+import CourseItem from './components/CourseItem'
 import './Profile.css'
 
-const Profile = (userId) => {
+const Profile = ({userId, socket}) => {
   const auth = useContext(AuthContext)
   const {loading, request} = useHttp()
   const [user, setUser] = useState(null)
@@ -40,16 +40,16 @@ const Profile = (userId) => {
       <div className="profile__info info">
         { !loading && <h1 className="profile__title main-title page-title animate__animated animate__fadeInDown">Мой профиль</h1> }
         { !loading && user && <div className="sidebar animate__animated animate__fadeInLeft"><Sidebar user={user} /></div> }
-        { !loading && user && <Route path="/profile/main-info"><MainInfo user={user} /></Route> }
-        { !loading && user && <Route path="/profile/bonus"><Bonus user={user} /></Route> }
-        { !loading && user && <Route path="/profile/my-courses"><MyCourses user={user} /></Route> }
-        { !loading && user && <Route path="/profile/create-course"><CreateCourse user={user} /></Route> }
-        { !loading && user && <Route path="/profile/directions"><Directions user={user} /></Route> }
+        { !loading && user && <Route path="/profile/main-info"><MainInfo candidate={user} /></Route> }
+        { !loading && user && <Route path="/profile/bonus"><Bonus candidate={user} /></Route> }
+        { !loading && user && <Route path="/profile/my-courses/:id"><CourseItem /></Route> }
+        { !loading && user && <Route path="/profile/my-courses" exact><MyCourses candidate={user} /></Route> }
+        { !loading && user && <Route path="/profile/create-course"><CreateCourse candidate={user} /></Route> }
+        { !loading && user && <Route path="/profile/directions"><Directions candidate={user} /></Route> }
         { !loading && user && <Route path="/profile/users/:id"><UserDetail /></Route> }
-        { !loading && user && <Route path="/profile/users" exact><Users user={user} /></Route> }
-        { !loading && user && <Route path="/profile/feedback"><Feedback user={user} /></Route> }
-        { !loading && user && <Route path="/profile/notifications"><Notify user={user} /></Route> }
-        { !loading && user && <Route path="/profile/settings"><Settings user={user} /></Route> }
+        { !loading && user && <Route path="/profile/users" exact><Users candidate={user} /></Route> }
+        { !loading && user && <Route path="/profile/messages"><Chat candidate={user} socket={socket} /></Route> }
+        { !loading && user && <Route path="/profile/settings"><Settings candidate={user} /></Route> }
       </div>
     </div>
   )

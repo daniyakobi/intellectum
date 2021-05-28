@@ -21,6 +21,12 @@ const UserDetailCard = ({ user }) => {
       role = 'Преподаватель' }
       else { role = 'Администратор' }
 
+  let avatar = ''
+  if(user.avatarUrl) {
+    avatar = `http://localhost:3000${user.avatarUrl}`
+  } else {
+    avatar = defaultAvatar
+  }
 
   const tabsHandler = (event) => {
     const tab = event.target.getAttribute('data-tab')
@@ -57,8 +63,8 @@ const UserDetailCard = ({ user }) => {
         <div className="info__line"></div>
         <div className="info__detail flex-row-start">
           <div className="info__avatar">
-            <img src={ user.avatar ? user.avatar : defaultAvatar } alt={`Аватар - ${user.subname} ${user.name} ${user.patronymic}`}className="info__avatar-preview" />
-           </div>
+            <img src={ avatar } alt={`Аватар - ${user.subname} ${user.name} ${user.patronymic}`}className="info__avatar-preview" />
+          </div>
           <div className="info__section-rigth flex-column" style={{marginLeft: 0}, {width: '100%'}}>
             <div className="info__detail-buttons flex-row-start">
               <button className='info__detail-button button flex-center full text-16' onClick={ tabsHandler } data-tab='main' >Основное</button>

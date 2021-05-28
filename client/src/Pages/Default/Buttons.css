@@ -1,4 +1,4 @@
-.button {
+.button{
   width: 170px;
   height: 40px;
   /* border-radius: 3px; */
@@ -8,8 +8,12 @@
   transition: all 0.3s ease-in-out;
   letter-spacing: 0.01em;
 }
-
-.button.full {
+.button:focus {
+  border: 1px solid var(--black);
+  background-color: transparent;
+  color: var(--black);
+}
+.button.full, .button:focus.full {
   background-color: var(--black);
   color: var(--white);
 }

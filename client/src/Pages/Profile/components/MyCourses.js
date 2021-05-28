@@ -1,8 +1,76 @@
-import React, { useContext } from 'react'
+import React, {useEffect, useState, useContext, useCallback} from 'react'
+import { useHttp } from '../../../hooks/http.hook'
+import { useMessage } from '../../../hooks/message.hook'
 import { NavLink } from 'react-router-dom'
 import { AuthContext } from '../../../context/auth.context'
+import CourseList from './CourseList'
 
-const Feedback = ({ user }) => {
+const MyCourses = ({ candidate }) => {
+  const auth = useContext(AuthContext)
+  const message = useMessage()
+  const {loading, error, request, clearError} = useHttp()
+  const [user, setUser] = useState(candidate)
+  const [created, setCreated] = useState([])
+  const [current, setCurrent] = useState([])
+  const [completed, setCompleted] = useState([])
+  const [directions, setDirections] = useState([])
+
+  const getUser = useCallback(async () => {
+    try {
+      const data = await request('/api/profile/main', 'GET', null, { Authorization: `Bearer ${auth.token}` })
+      setUser(data)
+    } catch (e) {}
+  }, [auth.token, request])
+
+  const fetchCreated =  useCallback(
+    async () => {
+      try {
+        const fetched = await request('/api/course/my-created-courses', 'GET', null, { Authorization: `Bearer ${auth.token}` })
+        setCreated(fetched)
+      } catch (error) {}
+    },
+    [auth.token, request]
+  )
+
+  const fetchCurrent =  useCallback(
+    async () => {
+      try {
+        const fetched = await request('/api/course/my-current-courses', 'GET', null, { Authorization: `Bearer ${auth.token}` })
+        setCurrent(fetched)
+      } catch (error) {}
+    },
+    [auth.token, request]
+  )
+
+  const fetchCompleted =  useCallback(
+    async () => {
+      try {
+        const fetched = await request('/api/course/my-completed-courses', 'GET', null, { Authorization: `Bearer ${auth.token}` })
+        setCompleted(fetched)
+      } catch (error) {}
+    },
+    [auth.token, request]
+  )
+  
+  const fetchDirections =  useCallback(
+    async () => {
+      try {
+        const fetched = await request('/api/profile/all-directions', 'GET', null, { Authorization: `Bearer ${auth.token}` })
+        setDirections(fetched)
+      } catch (error) {}
+    },
+    [auth.token, request]
+  )
+
+  useEffect(() => {
+    getUser()
+    fetchDirections()
+    fetchCurrent()
+    fetchCompleted()
+    fetchCreated()
+  }, [getUser, fetchDirections, fetchCurrent, fetchCompleted, fetchCreated])
+
+
   return(
     <div className="info__wrapper">
       <h2 className="info__title text-24 animate__animated animate__fadeInRight">Мои курсы</h2>
@@ -20,30 +88,18 @@ const Feedback = ({ user }) => {
           <div className="info__section-title flex-row">
             <span className="text-16">Текущие курсы</span>
           </div>
-          { 
-            user.currentCourses ? 
-             <p>Вы еще не выбрали себе курс</p> :
-             user.currentCourses.map((item, index) => {
-               return (
-                 <div>Привет</div>
-               )
-             }) 
-          }
+          <div className="info__courses-wrapper">
+            { !loading && <CourseList courses={current} directions={directions} /> }
+          </div>
         </div>
         <div className="info__courses-items">
           <div className="info__line"></div>
           <div className="info__section-title flex-row">
             <span className="text-16">Завершенные курсы</span>
           </div>
-          { 
-            user.completedCourses ? 
-             <p>Вы еще не не прошли ни одного курса</p> :
-             user.currentCourses.map((item, index) => {
-               return (
-                 <div>Привет</div>
-               )
-             }) 
-          }
+          <div className="info__courses-wrapper">
+            { !loading && <CourseList courses={completed} directions={directions} /> }
+          </div>
         </div>
         {
           user.role === 0 ? <></> : 
@@ -52,15 +108,9 @@ const Feedback = ({ user }) => {
               <div className="info__section-title flex-row">
                 <span className="text-16">Созданные курсы</span>
               </div>
-              { 
-                user.createdCourses ? 
-                 <p>Вы еще не создали ни одного курса</p> :
-                 user.currentCourses.map((item, index) => {
-                   return (
-                     <div>Привет</div>
-                   )
-                 }) 
-              }
+              <div className="info__courses-wrapper">
+                { !loading && <CourseList courses={created} directions={directions} /> }
+              </div>
             </div>
         }
       </div>
@@ -68,4 +118,4 @@ const Feedback = ({ user }) => {
   )
 }
 
-export default Feedback
+export default MyCourses

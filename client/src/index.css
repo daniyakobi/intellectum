@@ -45,12 +45,13 @@
   --red: #FF0202;
   --green: #37B34A;
   --stroke: #c4c4c4;
-  --blue: #3D8BE4;
   --black: #000000;
   --dark-grey: #333333;
+  --dark-grey-light: #33333350;
   --dark-orange: #FF4823;
   --orange: #FFA800;
   --neutral: #F4F5EF;
+  --student: #004E94;
 }
 * {
   box-sizing: border-box;
@@ -59,9 +60,10 @@ body {
   height: 100%;
   width: 100%;
   position: relative;
-  font-family: 'Proxima Nova', serif;
+  font-family: 'Proxima Nova', serif !important;
   background-color: var(--white);
 }
+body::-webkit-scrollbar { width: 0; }
 button, input, textarea {
   outline: none;
   border: none;
@@ -72,6 +74,7 @@ button, input, textarea {
 }
 input, textarea {
   margin: 0;
+  box-sizing: border-box !important;
   padding: 0;
 }
 ul {
@@ -194,7 +197,7 @@ nav {
 .app-container {
   width: 100%;
   position: relative;
-  padding: 110px 20px 75px 0;
+  padding: 110px 20px 50px 0;
   transition: all 0.5s ease-in-out;
 }
 .btn-exit {
@@ -225,4 +228,10 @@ nav {
 }
 .info__section.animate__animated.animate__fadeInUp {
   --animate-duration: 1.5s;
+}
+.red-text { color: var(--dark-orange) }
+.green-text { color: var(--green) }
+button:focus { 
+  border: none;
+  background-color: transparent;
 }

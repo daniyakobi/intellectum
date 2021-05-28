@@ -6,12 +6,20 @@ import DirectionsItems from './DirectionsItems'
 import Button from '../../Default/Button'
 import refreshIcon from '../../../img/sidebar/src/refresh.svg'
 
-const Directions = ({ user }) => {
+const Directions = ({ candidate }) => {
   const auth = useContext(AuthContext)
   const message = useMessage()
   const {loading, error, request, clearError} = useHttp()
+  const [user, setUser] = useState(candidate)
   const [directions, setDirections] = useState([])
   const [direction, setDirection] = useState({ direction: '' })
+
+  const getUser = useCallback(async () => {
+    try {
+      const data = await request('/api/profile/main', 'GET', null, { Authorization: `Bearer ${auth.token}` })
+      setUser(data)
+    } catch (e) {}
+  }, [auth.token, request])
 
   const newDirectionChange = event => {
     setDirection({ direction, direction: event.target.value})
@@ -37,8 +45,9 @@ const Directions = ({ user }) => {
   )
 
   useEffect(() => {
+    getUser()
     fetchDirections()
-  }, [fetchDirections])
+  }, [getUser, fetchDirections])
 
   return(
     <div className="info__wrapper">

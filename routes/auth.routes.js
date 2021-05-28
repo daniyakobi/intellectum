@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport(sendgrid({
   auth: { api_key: config.get('SEND_GRID_API') }
 }))
 
-// /api/auth/register
+// Регистрация
 router.post(
   '/register', 
   [
@@ -56,7 +56,9 @@ router.post(
           currentCourses: [],
           createdCourses: [],
           notify: [],
-          operations: []
+          operations: [],
+          dialogs: [],
+          online: false
         })
         await user.save()
         await transporter.sendMail({
@@ -71,14 +73,15 @@ router.post(
             <a href="${config.get('BASE_URL')}">Перейти в профиль</a>
           `
         })
-        res.status(201).json({ message: `Пользователь  ${ email } создан` })
+        res.status(201).json({ message: `Вы успешно прошли регистрацию` })
       }
     } catch(e) {
       res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
     }
   }
 )
-// /api/auth/login
+
+// Авторизация
 router.post(
   '/login', 
   [
@@ -108,13 +111,21 @@ router.post(
         config.get('jwtsecret'),
         { expiresIn: '8h' }
       )
+
+      const toChange = {
+        online: true
+      }
+      Object.assign(user, toChange)
+      await user.save()
+
       res.status(200).json({ token, userId: user.id, userRole: user.role, message: `Авторизация прошла успешно. Здравствуйте, ${ user.name }!` })
     } catch(e) {
       res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
     }
   }
 )
-// /api/auth/reset
+
+// Запрос на сброс пароля
 router.post(
   '/reset',
   (req, res) => {
@@ -152,7 +163,8 @@ router.post(
     }
   }
 )
-// /api/auth/password
+
+// Смена пароля
 router.post(
   '/password/',
   async (req, res) => {
@@ -189,6 +201,34 @@ router.post(
     } catch (err) {
       console.log(err)
       return res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+    }
+  }
+)
+
+// Выход из системы
+router.post(
+  '/logout', 
+  async (req, res) => {
+    try {
+      let token = req.headers.authorization.split(' ')[1]
+
+      if (!token) {
+        res.status(401).json({ message: 'Пользователь не авторизован' });
+        return false;
+      }
+
+      const decoded = jwt.verify(token, config.get('jwtsecret'))
+      const user = await User.findOne({ _id: decoded.userId })
+
+      const toChange = {
+        online: false
+      }
+      Object.assign(user, toChange)
+      await user.save()
+
+      res.status(200).json({ message: `Вы успешно вышли из системы` })
+    } catch(e) {
+      res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
     }
   }
 )

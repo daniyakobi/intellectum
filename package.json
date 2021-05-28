@@ -16,8 +16,11 @@
   "author": "Daniil Nadeev <nadeev.danil2016@yandex.ru>",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.6",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "express-validator": "^6.10.0",
@@ -26,7 +29,8 @@
     "mongoose": "^5.12.2",
     "multer": "^1.4.2",
     "nodemailer": "^6.5.0",
-    "nodemailer-sendgrid-transport": "^0.2.0"
+    "nodemailer-sendgrid-transport": "^0.2.0",
+    "socket.io": "^4.1.2"
   },
   "devDependencies": {
     "concurrently": "^6.0.0",
