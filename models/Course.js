@@ -8,7 +8,7 @@ const schema = new Schema({
   direction: { type: Types.ObjectId, ref: 'Direction' },
   modules: [{ type: Types.ObjectId, ref: 'Module', default: [] }], 
   date: { type: Date, default: Date.now },
-  price: { type: Number, required: true},
+  price: { type: Number },
   thumb: { type: String, default: '' },
   profession: [{ type: Types.ObjectId, ref: 'Profession', default: []}],
   publication: { type: Number, default: 0 }

@@ -315,7 +315,6 @@ const CourseItemDetail = ({ course }) => {
             <button className='course__create-button button flex-center full text-16' onClick={ createTabsHandler } data-tab='view' >Просмотр</button>
             <button className='course__create-button button flex-center text-16' onClick={ createTabsHandler } data-tab='module' >Настройки модулей</button>
             <button className='course__create-button button flex-center text-16' onClick={ createTabsHandler } data-tab='lesson' >Настройки уроков</button>
-            {/* <button className='course__create-button button flex-center text-16' onClick={ createTabsHandler } data-tab='test' >Настройки тестов</button> */}
           </div>
           <div className="info__line"></div>
           <div className="course__detail course__create-tab animate__animated animate__fadeIn flex-column active" data-tab='view'>
@@ -330,11 +329,6 @@ const CourseItemDetail = ({ course }) => {
           <div className="course__detail course__create-tab animate__animated animate__fadeIn flex-column" data-tab='lesson'>
             <CreateLesson />
           </div>
-          {/* <div className="course__detail course__create-tab animate__animated animate__fadeIn flex-column" data-tab='test'>
-            <div className="info__section-title flex-row">
-              <span className="text-16">Создание теста</span>
-            </div>
-          </div> */}
         </div>
         <div className="course__detail info__detail-tab animate__animated animate__fadeIn flex-column" data-tab='availability'>
           <div className="course__detail-search flex-row-start" style={{width: '100%'}}>

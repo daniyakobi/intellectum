@@ -166,7 +166,7 @@ const MainInfo = ({ candidate }) => {
               </div>
           }
         </div>
-        <div class="info__section-image animate__animated animate__fadeIn">
+        <div className="info__section-image animate__animated animate__fadeIn">
           <img src={ progressImage } alt='Мой прогресс' />
         </div>
       </div>

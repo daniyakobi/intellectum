@@ -79,13 +79,13 @@ const Settings = ({ candidate }) => {
                 <input type="text" id="date" className="form__input info__settings-input text-17 validate" placeholder={ user.date ? user.date : 'Введите дату рождения' } name="date" onChange={ changeHandler } />
               </div>
             </div>
-            <div class="info__section-image animate__animated animate__fadeIn">
+            <div className="info__section-image animate__animated animate__fadeIn">
               <img src={ personalImage } alt='Персональная информация' />
             </div>
           </div>
           <div className="info__line"></div>
           <div className="form__block flex-row-start">   
-            <div class="info__section-image animate__animated animate__fadeIn">
+            <div className="info__section-image animate__animated animate__fadeIn">
               <img src={ contactsImage } alt='Контакты' />
             </div>   
             <div className="flex-column" style={{width: '50%'}}>
@@ -117,7 +117,7 @@ const Settings = ({ candidate }) => {
                 <textarea id="about" className="form__input info__settings-textarea text-17 validate" placeholder={ user.about ? user.about : 'Напишите о себе' } name="about" onChange={ changeHandler } />
               </div>    
             </div>
-            <div class="info__section-image animate__animated animate__fadeIn">
+            <div className="info__section-image animate__animated animate__fadeIn">
               <img src={ aboutImage } alt='Обо мне' />
             </div> 
           </div>

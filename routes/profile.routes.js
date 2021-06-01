@@ -4,7 +4,7 @@ const User = require('../models/User')
 const Direction = require('../models/Direction')
 const Course = require('../models/Course')
 const Profession = require('../models/Profession')
-const Dialog = require('../models/Dialog')
+const Dialog = require('../models/Room')
 const Message = require('../models/Message')
 const router = Router()
 const jwt = require('jsonwebtoken')
@@ -286,7 +286,6 @@ router.post('/create-course',
         author: user._id,
         direction: currDirection._id,
         modules: [],
-        lessons: [],
         price: price,
         thumb: thumbPath,
         profession: []
@@ -461,6 +460,9 @@ router.post('/update-direction', async (req, res) => {
 
     const {name, newName} = req.body
     const direction = await Direction.findOne({ name: name })
+    const newDirection = await Direction.findOne({ name: newName })
+
+    if(newDirection) return res.status(404).json({ message: `Нельзя изменить название на ${newName}, так как существует направление с таким названием` });
 
     const toChange = { name: newName }
     Object.assign(direction, toChange)
@@ -1037,250 +1039,5 @@ router.post('/delete-course', async (req, res) => {
     return res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
   }
 })
-
-// Создать диалог
-router.post('/create-dialog', async (req, res) => {
-  try {
-    let token = req.headers.authorization.split(' ')[1]
-
-    if (!token) {
-      res.status(401).json({ message: 'Пользователь не авторизован' });
-      return false;
-    }
-
-    const decoded = jwt.verify(token, config.get('jwtsecret'))
-    const user = await User.findOne({ _id: decoded.userId })
-    
-    const { users } = req.body
-
-    users.forEach( async user => {
-      const tmp = await User.findOne({ _id: user })
-      if(!tmp) res.status(404).json({ message: `Пользователь ${user} не найден` })
-    })
-
-    const tmpDialog = await Dialog.findOne({ users: users })
-    if(tmpDialog) {
-      return res.status(201).json({ message: `Диалог с ${companion.subname} ${companion.name} уже существует` })
-    }
-
-    const dialog = new Dialog({
-      users: users,
-    })
-    await dialog.save()
-
-    let dialogsUser = []
-    users.forEach( async user => {
-      const tmp = await User.findOne({ _id: user })
-      dialogsUser = tmp.dialogs
-      dialogsUser.push(dialog._id)
-      const toUserChange = {
-        dialogs: dialogsUser
-      }
-      Object.assign(tmp, toUserChange)
-      await tmp.save()
-    })
-    
-    return res.status(201).json({ message: `Диалог начат` })
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
-  }
-})
-
-// Получить все диалоги
-router.get('/all-dialogs', async (req, res) => {
-  try {
-    let token = req.headers.authorization.split(' ')[1]
-
-    if (!token) {
-      res.status(401).json({ message: 'Пользователь не авторизован' });
-      return false;
-    }
-
-    const decoded = jwt.verify(token, config.get('jwtsecret'))
-    const user = await User.findOne({ _id: decoded.userId })
-    
-    const tmpDialogs = user.dialogs
-    const result = []
-    tmpDialogs.forEach(async (dialog, index) => {
-      const tmp = await Dialog.findOne({ _id: dialog })
-      if(tmp) result.push(tmp)
-      if(tmpDialogs.length === index + 1) return res.status(201).json(result)
-    })
-  } catch (err) {
-    return res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
-  }
-})
-
-// Получить диалог
-router.get('/get-dialog', async (req, res) => {
-  try {
-    let token = req.headers.authorization.split(' ')[1]
-
-    if (!token) {
-      res.status(401).json({ message: 'Пользователь не авторизован' });
-      return false;
-    }
-
-    const decoded = jwt.verify(token, config.get('jwtsecret'))
-    const user = await User.findOne({ _id: decoded.userId })
-
-    const dialogId = req.headers.dialogid
-    const dialog = await Dialog.findOne({ _id: dialogId })
-
-    const messages = await Message.find({ dialog: dialog._id })
-    messages.forEach(async message => {
-      const toChange = { isRead: true }
-      Object.assign(message, toChange)
-      await message.save()
-    })
-    
-    return res.status(201).json(dialog)
-  } catch (err) {
-    return res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
-  }
-})
-
-// Получить компаньона
-router.get('/get-party', async (req, res) => {
-  try {
-    let token = req.headers.authorization.split(' ')[1]
-
-    if (!token) {
-      res.status(401).json({ message: 'Пользователь не авторизован' });
-      return false;
-    }
-
-    const decoded = jwt.verify(token, config.get('jwtsecret'))
-    const user = await User.findOne({ _id: decoded.userId })
-
-    const dialogId = req.headers.dialogid
-    
-    const dialog = await Dialog.findOne({ _id: dialogId })
-    if(!dialog) return res.status(404).json({ message: 'Такого диалога не существует' })
-
-    let users = dialog.users
-    const i = users.indexOf(user._id)
-    users.splice(i, 1)
-    const companion = await User.findOne({ _id: users[0] })
-    return res.status(201).json(companion)
-  } catch (err) {
-    return res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
-  }
-})
-
-// Получить все сообщения в диалоге
-router.get('/get-messages', async (req, res) => {
-  try {
-    let token = req.headers.authorization.split(' ')[1]
-
-    if (!token) {
-      res.status(401).json({ message: 'Пользователь не авторизован' });
-      return false;
-    }
-
-    const decoded = jwt.verify(token, config.get('jwtsecret'))
-    const user = await User.findOne({ _id: decoded.userId })
-  
-    const dialogId = req.headers.dialogid
-
-    const messages = await Message.find({ dialog: dialogId })
-
-    return res.status(201).json(messages)
-  } catch (err) {
-    return res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
-  }
-})
-
-// Получить непрочитанные сообщения
-router.get('/get-unread', async (req, res) => {
-  try {
-    let token = req.headers.authorization.split(' ')[1]
-
-    if (!token) {
-      res.status(401).json({ message: 'Пользователь не авторизован' });
-      return false;
-    }
-
-    const decoded = jwt.verify(token, config.get('jwtsecret'))
-    const user = await User.findOne({ _id: decoded.userId })
-  
-    const dialogId = req.headers.dialogid
-
-    const messages = await Message.find({ dialog: dialogId, to: user._id, isRead: false })
-
-    return res.status(201).json(messages.length)
-  } catch (err) {
-    return res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
-  }
-})
-
-// Хранилище для вложений
-const storageMessage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/messages')
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname)
-  }
-})
-
-const allowedTypesMessage = ['image/png', 'image/jpg', 'image/jpeg', 'video/mp4', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-const fileFilterMessage = (req, file, cb) => {
-  if(allowedTypesMessage.includes(file.mimetype)) {
-    cb(null, true)
-  } else {
-    cb(null, false)
-  }
-}
- 
-const uploadMessage = multer({ storage: storageMessage, fileFilter: fileFilterMessage })
-
-// Отправить сообщение
-router.post('/send-message', uploadMessage.single('messageFile') ,async (req, res) => {
-  try {
-    let token = req.body.token.split(' ')[1]
-
-    if (!token) {
-      res.status(401).json({ message: 'Пользователь не авторизован' });
-      return false;
-    }
-
-    const decoded = jwt.verify(token, config.get('jwtsecret'))
-    const fromUser = await User.findOne({ _id: decoded.userId })
-    
-    const { fromId, toId, dialogId, messageText } = req.body
-    let filePath = ''
-    if(req.file) {
-      filePath = `/${req.file.destination}/${req.file.filename}`
-    }
-
-    if(fromUser._id != fromId) return res.status(404).json({ message: `Пользователь не найден` })
-    const toUser = await User.findOne({ _id: toId })
-    if(!toUser) return res.status(404).json({ message: `Собеседник не найден` })
-
-    const dialog = await Dialog.findOne({ _id: dialogId })
-    if(!dialog) return res.status(404).json({ message: `Диалог не найден` })
-
-    const message = new Message({
-      from: fromUser._id,
-      to: toUser._id,
-      dialog: dialog._id,
-      message: messageText,
-      file: filePath,
-      idRead: false
-    })
-
-    await message.save()
-    return res.status(201).json({ message: `Сообщение отправлено` })
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
-  }
-})
-
-// Редактировать сообщение
-// Удалить сообщение
-// Удалить диалог
 
 module.exports = router

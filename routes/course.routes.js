@@ -240,11 +240,6 @@ router.post('/delete-module', async (req, res) => {
       await Lesson.deleteOne({_id: item})
     }) 
 
-    // const tests = module.tests
-    // tests.map(async (item,index) => {
-    //   await Test.deleteOne({_id: item})
-    // }) 
-
     await Module.deleteOne({ _id: moduleId })
 
     return res.status(201).json({ message: 'Модуль успешно удален' })
@@ -445,9 +440,6 @@ router.post('/delete-lesson', async (req, res) => {
   }
 })
 
-// Создание теста
-// Редактирование теста
-// Удаление теста
 
 
 module.exports = router

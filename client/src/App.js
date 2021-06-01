@@ -5,7 +5,6 @@ import { useAuth } from './hooks/auth.hook'
 import { AuthContext } from './context/auth.context'
 import 'materialize-css'
 import 'animate.css'
-import { io } from "socket.io-client";
 
 import { Route, Redirect, Switch } from 'react-router-dom'
 import Course from './Pages/Course/Course'
@@ -25,8 +24,6 @@ import Teachers from './Pages/Teachers/Teachers'
 function App() {
   const {token, login, logout, userId, userRole} = useAuth()
   const isAuth = !!token
-  // const routes = useRoutes(isAuth, userRole);
-  var socket = io()
 
   return (
     <AuthContext.Provider value={{token, login, logout, userId, isAuth, userRole}}>
@@ -36,7 +33,7 @@ function App() {
             <>
               <Main userId={userId}/>
               <div className="app-container">
-                <Route path="/profile/"><Profile userId={userId} socket={socket} /></Route>
+                <Route path="/profile/"><Profile userId={userId} /></Route>
                 <Route path="/about" exact><About userId={userId} /></Route> 
                 <Route path="/all-courses/:id">
                   <Course />

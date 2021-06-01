@@ -47,8 +47,6 @@ const Header = ({ user }) => {
 
   const exitHandler = async () => {
     try {
-      const data = await request('/api/auth/logout', 'POST', null, { Authorization: `Bearer ${auth.token}` })
-      message(data.message)
       auth.logout()
     } catch (e) {}
   }

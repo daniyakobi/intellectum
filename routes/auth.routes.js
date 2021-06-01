@@ -57,8 +57,9 @@ router.post(
           createdCourses: [],
           notify: [],
           operations: [],
-          dialogs: [],
-          online: false
+          rooms: [],
+          online: false,
+          socketId: ''
         })
         await user.save()
         await transporter.sendMail({
@@ -111,12 +112,6 @@ router.post(
         config.get('jwtsecret'),
         { expiresIn: '8h' }
       )
-
-      const toChange = {
-        online: true
-      }
-      Object.assign(user, toChange)
-      await user.save()
 
       res.status(200).json({ token, userId: user.id, userRole: user.role, message: `Авторизация прошла успешно. Здравствуйте, ${ user.name }!` })
     } catch(e) {
@@ -201,34 +196,6 @@ router.post(
     } catch (err) {
       console.log(err)
       return res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
-    }
-  }
-)
-
-// Выход из системы
-router.post(
-  '/logout', 
-  async (req, res) => {
-    try {
-      let token = req.headers.authorization.split(' ')[1]
-
-      if (!token) {
-        res.status(401).json({ message: 'Пользователь не авторизован' });
-        return false;
-      }
-
-      const decoded = jwt.verify(token, config.get('jwtsecret'))
-      const user = await User.findOne({ _id: decoded.userId })
-
-      const toChange = {
-        online: false
-      }
-      Object.assign(user, toChange)
-      await user.save()
-
-      res.status(200).json({ message: `Вы успешно вышли из системы` })
-    } catch(e) {
-      res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
     }
   }
 )

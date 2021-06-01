@@ -21,8 +21,9 @@ const schema = new Schema({
   role: { type: Number, required: true },
   resetToken: { type: String },
   resetTokenExp: { type: Date },
-  dialogs: [{ type: Types.ObjectId, ref: 'Dialog' }],
-  online: { type: Boolean, required: true, default: false }
+  rooms: [{ type: Types.ObjectId, ref: 'Dialog' }],
+  online: { type: Boolean, default: false },
+  socketId: { type: String }
 })
 
 module.exports = User = mongoose.model('user', schema)

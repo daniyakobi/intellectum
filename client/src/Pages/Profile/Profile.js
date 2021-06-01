@@ -9,14 +9,14 @@ import Bonus from './components/Bonus'
 import MyCourses from './components/MyCourses'
 import Sidebar from '../Default/Sidebar'
 import CreateCourse from '../CreateCourse/CreateCourse'
-import Chat from './components/Chat'
+import ChatPage from './components/messages/ChatPage'
 import Directions from './components/Directions'
 import Users from './components/Users'
 import UserDetail from './components/UserDetail'
 import CourseItem from './components/CourseItem'
 import './Profile.css'
 
-const Profile = ({userId, socket}) => {
+const Profile = ({ userId }) => {
   const auth = useContext(AuthContext)
   const {loading, request} = useHttp()
   const [user, setUser] = useState(null)
@@ -48,7 +48,7 @@ const Profile = ({userId, socket}) => {
         { !loading && user && <Route path="/profile/directions"><Directions candidate={user} /></Route> }
         { !loading && user && <Route path="/profile/users/:id"><UserDetail /></Route> }
         { !loading && user && <Route path="/profile/users" exact><Users candidate={user} /></Route> }
-        { !loading && user && <Route path="/profile/messages"><Chat candidate={user} socket={socket} /></Route> }
+        { !loading && user && <Route path="/profile/messages"><ChatPage candidate={user} /></Route> }
         { !loading && user && <Route path="/profile/settings"><Settings candidate={user} /></Route> }
       </div>
     </div>

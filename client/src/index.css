@@ -139,6 +139,11 @@ nav {
   flex-direction: column;
   align-items: center;
 }
+.flex-column-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 .text-title {
   font-size: 55px;
   line-height: 70px;
