@@ -204,7 +204,7 @@ const CreateModule = () => {
   }
 
   const uploadVideo = (file) => {
-    if(!['video/mp4'].includes(file.type)) {
+    if(!['video/mp4', 'video/mov'].includes(file.type)) {
       message('Разрешены изображения следующих форматов - mp4')
       return
     }

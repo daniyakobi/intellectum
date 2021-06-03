@@ -859,3 +859,41 @@ select:focus {
 }
 .chat__rooms-item span.teacher { color: var(--orange); }
 .chat__rooms-item span.admin { color: var(--dark-orange); }
+.learn__tab.active {
+  display: flex;
+}
+.learn__block {
+  width: 75%;
+  padding-right: 15px;
+  height: 100%;
+}
+.learn__sidebar {
+  width: 25%;
+  padding-left: 10px;
+  height: 100%;
+  border-left: 1px solid #00000010;
+  overflow-y: scroll;
+}
+.learn__sidebar::-webkit-scrollbar { width: 0 !important; }
+.learn-button {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+.learn__block-bg {
+  width: 100%;
+  height: 100%;
+  background-image: url(../../img/tutorial.png);
+  background-repeat: no-repeat;
+  background-size: 50%;
+  background-position: center;
+}
+.lesson__block-info h2 {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 30px;
+}

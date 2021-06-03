@@ -292,9 +292,11 @@ const CourseItemDetail = ({ course }) => {
                 course.publication == 0 ? <p className='text-16 red-text'>Не опубликован</p> : <p className='text-16 green-text'>Опубликован</p> 
               }
             </div>
-            <div className="course__price text-16">
-              <span className="course__price-value text-20">Цена: { course.price }</span> <span className="course__price-wallet text-16">Руб.</span>
-            </div>
+            { course.price ?
+              <div className="course__price text-16">
+                <span className="course__price-value text-20">Цена: { course.price }</span> <span className="course__price-wallet text-16">Руб.</span>
+              </div> : null
+            }
             <div className="info__line"></div>
             <div className="info__item text-16">
               <div className="info__label" style={{marginBottom: 10}}>Описание</div>

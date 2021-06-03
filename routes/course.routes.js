@@ -258,7 +258,7 @@ const storageLessons = multer.diskStorage({
   }
 })
 
-const allowedTypesLessons = ['video/mp4']
+const allowedTypesLessons = ['video/mp4', 'video/mov']
 const fileFilterLessons = (req, file, cb) => {
   if(allowedTypesLessons.includes(file.mimetype)) {
     cb(null, true)

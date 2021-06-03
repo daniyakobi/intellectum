@@ -36,9 +36,11 @@ const CourseList = ({ courses, directions }) => {
                 }) }
                 <h3 className="course-item__title text-24">{ item.name }</h3>
                 <div className="info__line"></div>
-                <div className="course-item__price flex-row">
-                  <span className="course-item__price-value text-20">{ item.price } <span className="course-item__price-wallet text-16">Руб.</span></span>
-                </div>
+                { item.price ?
+                  <div className="course-item__price flex-row">
+                    <span className="course-item__price-value text-20">{ item.price } <span className="course-item__price-wallet text-16">Руб.</span></span>
+                  </div> : null
+                }
               </div>
             </div>
           )

@@ -122,8 +122,6 @@ io.on('connection', socket => {
       console.log(err);
     }
   })
-
-  console.log('Connect', socket.id);
 })
 
 const PORT = config.get('port') || 5000

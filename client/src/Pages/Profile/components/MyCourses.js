@@ -4,6 +4,7 @@ import { useMessage } from '../../../hooks/message.hook'
 import { NavLink } from 'react-router-dom'
 import { AuthContext } from '../../../context/auth.context'
 import CourseList from './CourseList'
+import CourseListLearn from './CourseListLearn'
 
 const MyCourses = ({ candidate }) => {
   const auth = useContext(AuthContext)
@@ -89,7 +90,7 @@ const MyCourses = ({ candidate }) => {
             <span className="text-16">Текущие курсы</span>
           </div>
           <div className="info__courses-wrapper">
-            { !loading && <CourseList courses={current} directions={directions} /> }
+            { !loading && <CourseListLearn courses={current} directions={directions} /> }
           </div>
         </div>
         <div className="info__courses-items">
@@ -98,7 +99,7 @@ const MyCourses = ({ candidate }) => {
             <span className="text-16">Завершенные курсы</span>
           </div>
           <div className="info__courses-wrapper">
-            { !loading && <CourseList courses={completed} directions={directions} /> }
+            { !loading && <CourseListLearn courses={completed} directions={directions} /> }
           </div>
         </div>
         {

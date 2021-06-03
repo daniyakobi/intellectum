@@ -14,6 +14,7 @@ import Directions from './components/Directions'
 import Users from './components/Users'
 import UserDetail from './components/UserDetail'
 import CourseItem from './components/CourseItem'
+import CourseLearnItem from './components/CourseLearnItem'
 import './Profile.css'
 
 const Profile = ({ userId }) => {
@@ -42,7 +43,8 @@ const Profile = ({ userId }) => {
         { !loading && user && <div className="sidebar animate__animated animate__fadeInLeft"><Sidebar user={user} /></div> }
         { !loading && user && <Route path="/profile/main-info"><MainInfo candidate={user} /></Route> }
         { !loading && user && <Route path="/profile/bonus"><Bonus candidate={user} /></Route> }
-        { !loading && user && <Route path="/profile/my-courses/:id"><CourseItem /></Route> }
+        { !loading && user && <Route path="/profile/my-courses/learn/:id" ><CourseLearnItem /></Route> }
+        { !loading && user && <Route path="/profile/my-courses/:id" exact><CourseItem /></Route> }
         { !loading && user && <Route path="/profile/my-courses" exact><MyCourses candidate={user} /></Route> }
         { !loading && user && <Route path="/profile/create-course"><CreateCourse candidate={user} /></Route> }
         { !loading && user && <Route path="/profile/directions"><Directions candidate={user} /></Route> }
